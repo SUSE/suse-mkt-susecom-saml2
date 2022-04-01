@@ -1,4 +1,6 @@
-## Laravel 5 - Saml2
+## Laravel 5 - Saml2 - OKTA
+
+Note: this is a fork of the original package, modified by SUSE to support OKTA login.
 
 [![Build Status](https://travis-ci.org/aacotroneo/laravel-saml2.svg)](https://travis-ci.org/aacotroneo/laravel-saml2)
 
