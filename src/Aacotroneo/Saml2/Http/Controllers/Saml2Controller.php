@@ -74,7 +74,7 @@ class Saml2Controller extends Controller
         $error = $this->saml2Auth->sls(config('saml2_settings.retrieveParametersFromServer'));
         if (!empty($error)) {
 		//dd($error);
-            throw new \Exception("Could not log out");
+            throw new \Exception(print_r($error, true));
         }
 	//remove session variable
 	session()->flush();	
