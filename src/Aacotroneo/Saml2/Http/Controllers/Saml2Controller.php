@@ -51,7 +51,7 @@ class Saml2Controller extends Controller
         }
         $user = $this->saml2Auth->getSaml2User();
 	$attributes_needed = $user->getAttributes();
-	session(['SAML_NAMEID' => $attributes_needed['email'][0]]);
+	//session(['SAML_NAMEID' => $attributes_needed['email'][0]]);
 	
         event(new Saml2LoginEvent($user, $this->saml2Auth));
         $redirectUrl = $user->getIntendedUrl();
@@ -90,7 +90,7 @@ class Saml2Controller extends Controller
         $sessionIndex = $request->query('sessionIndex');
 	//original next line, but w Okta its different (line after)
         //$nameId = $request->query('nameId');
-	$nameId = session('SAML_NAMEID');
+	$nameId = session('okta_user_data')['nameid'] ?? '';
         $this->saml2Auth->logout($returnTo, $nameId, $sessionIndex); //will actually end up in the sls endpoint
     }
 
