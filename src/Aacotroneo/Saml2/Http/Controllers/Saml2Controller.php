@@ -96,14 +96,6 @@ class Saml2Controller extends Controller
         $this->saml2Auth->logout($returnTo, $nameId, $sessionIndex); //will actually end up in the sls endpoint
     }
 
-    public function login_with_path(Request $request)
-    {
-        error_log("IN NEW SAML LOGIN TEST");
-        error_log("Request path is: " . $request->path);
-        //$request->path
-        $this->saml2Auth->login("products/server");
-    }
-
     /**
      * This initiates a login request
      * origin login()
