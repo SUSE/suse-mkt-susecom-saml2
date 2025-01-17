@@ -6,7 +6,9 @@ use Aacotroneo\Saml2\Events\Saml2LoginEvent;
 use Aacotroneo\Saml2\Saml2Auth;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
-use Cookie;  //NEEDED TO JIMMY-RIG LOGIN FROM WALTS COOKIE
+use Cookie;
+
+//NEEDED TO JIMMY-RIG LOGIN FROM WALTS COOKIE
 
 class Saml2Controller extends Controller
 {
@@ -50,9 +52,9 @@ class Saml2Controller extends Controller
             return redirect(config('saml2_settings.errorRoute'));
         }
         $user = $this->saml2Auth->getSaml2User();
-	$attributes_needed = $user->getAttributes();
-	//session(['SAML_NAMEID' => $attributes_needed['email'][0]]);
-	
+        $attributes_needed = $user->getAttributes();
+        //session(['SAML_NAMEID' => $attributes_needed['email'][0]]);
+
         event(new Saml2LoginEvent($user, $this->saml2Auth));
         $redirectUrl = $user->getIntendedUrl();
 
@@ -73,11 +75,11 @@ class Saml2Controller extends Controller
     {
         $error = $this->saml2Auth->sls(config('saml2_settings.retrieveParametersFromServer'));
         if (!empty($error)) {
-		//dd($error);
+            //dd($error);
             throw new \Exception(print_r($error, true));
         }
-	//remove session variable
-	session()->flush();	
+        //remove session variable
+        session()->flush();
         return redirect(config('saml2_settings.logoutRoute')); //may be set a configurable default
     }
 
@@ -88,12 +90,11 @@ class Saml2Controller extends Controller
     {
         $returnTo = $request->query('returnTo');
         $sessionIndex = $request->query('sessionIndex');
-	//original next line, but w Okta its different (line after)
+        //original next line, but w Okta its different (line after)
         //$nameId = $request->query('nameId');
-	$nameId = session('okta_user_data')['nameid'] ?? '';
+        $nameId = session('okta_user_data')['nameid'] ?? '';
         $this->saml2Auth->logout($returnTo, $nameId, $sessionIndex); //will actually end up in the sls endpoint
     }
-
 
     /**
      * This initiates a login request
@@ -101,24 +102,37 @@ class Saml2Controller extends Controller
      */
     public function login()
     {
-	    
-	$url_value = Cookie::get('login_source');
-	if(empty($url_value)){
-		$url_value = config('saml2_settings.loginRoute');
-	}		
-	    //orig
-	//config('saml2_settings.loginRoute');	
-	$this->saml2Auth->login($url_value);
-	      
-	//$this->saml2Auth->login(config('saml2_settings.loginRoute'));
+        // try to get the return URL from the get param so that it will work for Optimizely
+        $url_value = request()->get(config('saml2_settings.returnUrlGetParam', 'returnUrl'));
+
+        // if not there - try to get it from a cookie
+        if (empty($url_value)) {
+            $url_value = Cookie::get('login_source');
+        }
+
+        // validate the URL
+        if (filter_var($url_value, FILTER_VALIDATE_URL) === false) {
+            $url_value = null;
+        }
+
+        if ($url_value) {
+            $url_parts = parse_url($url_value);
+            if (!empty($url_parts['host']) && !in_array($url_parts['host'], $this->getAllowedHosts())) {
+                $url_value = null;
+            }
+        }
+
+        // If not $url_value is found (or is reset to empty)
+        // use the default setting for login route (should be the suse.com home page)
+        if (empty($url_value)) {
+            $url_value = config('saml2_settings.loginRoute');
+        }
+
+        $this->saml2Auth->login($url_value);
     }
 
-    public function login_with_path(Request $request)
+    protected function getAllowedHosts()
     {
-	    error_log("IN NEW SAML LOGIN TEST");
-	    error_log("Request path is: " . $request->path);
-	    //$request->path
-	$this->saml2Auth->login("products/server");
+        return config('saml2_settings.allowedRedirectDomains', [config('app.url', 'www.suse.com')]);
     }
 }
-
