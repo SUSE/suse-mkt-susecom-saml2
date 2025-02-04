@@ -4,7 +4,7 @@
     "keywords": ["laravel","saml", "saml2", "onelogin"],
     "homepage": "https://github.com/SUSE/suse-mkt-susecom-saml2",
     "license": "MIT",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "authors": [
         {
             "name": "aacotroneo",
@@ -15,7 +15,7 @@
         "php": ">=5.4.0",
         "ext-openssl": "*",
         "illuminate/support": ">=5.0.0",
-        "suse/php-saml": "1.0.3"
+        "suse/php-saml": "1.0.4"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*"
