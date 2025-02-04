@@ -57,25 +57,6 @@ class Saml2Controller extends Controller
 
         event(new Saml2LoginEvent($user, $this->saml2Auth));
         $redirectUrl = $user->getIntendedUrl();
-        logger()->error('Set Redirect URL: ' . $redirectUrl);
-        logger()->error('Relay URL in REQUEST: ' . app('request')->input('RelayState'));
-        logger()->error('Relay URL in GET: ' . app('request')->query('RelayState'));
-        logger()->error('Relay URL in GET: ' . app('request')->query('RelayState'));
-        if (!is_array($attributes_needed) || empty($attributes_needed)) {
-            logger()->error('SAML: No attributes needed');
-        } else {
-            if (empty($attributes_needed['email'])) {
-                logger()->error('SAML: No email attribute');
-            } else {
-                logger()->error('SAML: email: ' . $attributes_needed['email'][0]);
-            }
-        }
-        $testUser = auth()->user();
-        if (is_object($testUser)) {
-            if (property_exists($testUser, 'okta_account_id')) {
-                logger()->error('User name: ' . auth()->user()->okta_account_id);
-            }
-        }
 
         if ($redirectUrl !== null) {
             return redirect($redirectUrl);
