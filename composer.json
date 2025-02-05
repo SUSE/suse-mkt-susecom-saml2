@@ -1,10 +1,10 @@
 {
-    "name": "aacotroneo/laravel-saml2",
-    "description": "A Laravel package for Saml2 integration as a SP (service provider) based on OneLogin toolkit, which is much lightweight than simplesamlphp. This package contains modification made for the suse.com website.",
+    "name": "suse/laravel-saml2",
+    "description": "This is a forked version created by Suse. A Laravel package for Saml2 integration as a SP (service provider) based on OneLogin toolkit, which is much lightweight than simplesamlphp. This package contains modification made for the suse.com website.",
     "keywords": ["laravel","saml", "saml2", "onelogin"],
-    "homepage": "https://github.com/aacotroneo/laravel-saml2",
+    "homepage": "https://github.com/SUSE/suse-mkt-susecom-saml2",
     "license": "MIT",
-    "version": "1.0.0",
+    "version": "1.0.7",
     "authors": [
         {
             "name": "aacotroneo",
@@ -15,7 +15,7 @@
         "php": ">=5.4.0",
         "ext-openssl": "*",
         "illuminate/support": ">=5.0.0",
-        "onelogin/php-saml": "dev-main"
+        "suse/php-saml": "1.0.4"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*"
